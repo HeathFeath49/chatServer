@@ -52,22 +52,20 @@ function resolve(req,res){
 
 	//loop through routes array and check for resolution 
 	for(var r=0;r<routes.length;r++){
-		if(routes[r].method == reqMethod && routes[r].url == reqUrl){
-			//console.log('called handler');
+		if(routes[r].method == reqMethod && routes[r].url.test(reqUrl)){
+			console.log('called handler');
 			routes[r].handler(req,res);
 			break;
 		}
-		else{
-			console.log('ERROR AT: resolve');
-			/*console.log(reqMethod + " " + reqUrl);*/
-		}
+		
 	} 
 }
 
+console.log('j');
+addRoute('GET',/^\/$/,addClient);
+addRoute('GET',/^\/user$/,determineMsg);
+addRoute('GET',/^\/msg$/,broadcast);
 
-addRoute('GET','/',determineMsg);
-addRoute('GET','/msg:',broadcast);
-addRoute('GET','/:',addClient);
 
 var server = http.createServer(function(request, response) {
 	//RESOLVE ROUTE	

@@ -1,7 +1,7 @@
 var http = require("http"); 
 var clientList = [];
 var routes = [];
-/*var clientCon;*/
+
 
 
 
@@ -18,14 +18,10 @@ function broadcast(author,message){
 }
 
 
-function determineMsg(req,res){
-	if(req.url == '/?'){
-		console.log('handler satisfied!');
-		broadcast(res.name,'has entered the chatroom');
-	}
-	else{
-		console.log("ERROR AT: determineMsg");
-	}
+function welcomeUser(req,res){
+	console.log('got to welcome user');
+	res.write("<h1>NEW DATA!<code>" + res.name + "</code></h1>");
+	
 }
 
 function addClient(req,res){
@@ -33,7 +29,7 @@ function addClient(req,res){
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
 
 	clientList.push(res);
-	console.log('added client');
+	res.write("<h1>Welcome to chat <code>" + res.name + "</code></h1>");
 }
 
 function addRoute(method,url,handler){
@@ -56,30 +52,29 @@ function resolve(req,res){
 			console.log('called handler');
 			routes[r].handler(req,res);
 			break;
-		}
-		
+		}	
 	} 
 }
 
-console.log('j');
 addRoute('GET',/^\/$/,addClient);
-addRoute('GET',/^\/user$/,determineMsg);
-addRoute('GET',/^\/msg$/,broadcast);
+addRoute('GET',/^\/\?user/,welcomeUser);//need to create handler function
+//addRoute('GET',/^\/?user/,broadcast);
 
 
 var server = http.createServer(function(request, response) {
+	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
+	//response.write("<h1>Welcome to chat <code>" + response.name + "</code></h1>");
+	
 	//RESOLVE ROUTE	
 	resolve(request,response);
-	
-	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
-	response.write("<h1>Welcome to chat <code>" + response.name + "</code></h1>");
+	response.end();
+
 
 	//ANNOUNCE CLIENT LEAVING
-
- 	//client.on("close",function(){
-	// 	broadcast({name:response.name},"has left the chatroom");
-	// 	clientList.splice(clientList.indexOf(response),1);
-	// });
+ 	/*client.on("close",function(){
+		broadcast({name:response.name},"has left the chatroom");
+		clientList.splice(clientList.indexOf(response),1);
+	});*/
 	 
 }); 
 

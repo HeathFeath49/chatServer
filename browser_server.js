@@ -1,30 +1,34 @@
 var http = require("http"); 
 var clientList = [];
 var routes = [];
-
+var data ={
+	username: null,
+	message: null
+};
 
 
 
 function broadcast(author,message){
-	//console.log('hit broadcast');
 
-	clientList.forEach(function(fella){
-		console.log('inside clientLoop');
-		//fella.write("<p><code>"+author + "</code>:<code>" + message+"</code></p>");
-		/*fella.write("<p><code>"+message+"</code></p>");*/
-		console.log(author + " : "+ message);
-
+	clientList.forEach(function(res){
+		res.write(message);
 	});		
+}
+
+function getMessage(req,res){
+	var username = req.url.slice(7,req.url.length);
+	//broadcast(username,"<h1>blah</h1>");
+	var msgStart = username.length+2;
+	var message = req.url.slice(msgStart,req.url.length);
+	console.log(message);
 }
 
 
 function welcomeUser(req,res){
 	var username = req.url.slice(7,req.url.length);
-	console.log(username);
+	data.username = username;
 	addClient(res);
-	res.write("<h1>Welcome to chat <code>" + username + "</code></h1>");
-	
-	
+	//broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
 }
 
 function addClient(res){
@@ -58,9 +62,9 @@ function resolve(req,res){
 	} 
 }
 
-//addRoute('GET',/^\/$/,addClient);
-addRoute('GET',/\/\?user=\w+/,welcomeUser);//need to create handler function
-//addRoute('GET',/^\/?user=/,broadcast);
+addRoute('GET',/^\/$/,addClient);
+//addRoute('GET',/\/\?user=\w+/,welcomeUser);//need to create handler function
+addRoute('GET',/\/\?user=\w+&msg=\w+/,getMessage);
 
 
 var server = http.createServer(function(request, response) {

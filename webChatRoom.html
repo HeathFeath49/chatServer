@@ -14,9 +14,28 @@
 
 		<div id='messageBoard'></div>
 
+		<div class='lightbox' id='usernameInput'>
+			<div id='wrapperDiv'>
+				<span>Enter Username</span><br>
+				<input type='text' id='usernameInputField'><br>
+				<button id="submit">Submit</button>
+			<div>
+		</div>
+
 	</body>
 	<script>
-		$(document).ready(sendRepeatedRequests("http://localhost:8000/?user=Heather"));
+
+		document.addEventListener('DOMContentLoaded',function(event){
+			console.log('page loaded');
+		});
+
+		document.getElementById('submit').addEventListener('click',function(event){
+			var username = document.getElementById('usernameInputField').value;
+			window.location.href='#usernameInput';
+			sendRepeatedRequests('http://localhost:8000/?user='+username);
+		});	
+
+		/*$(document).ready(sendRepeatedRequests("http://localhost:8000/?user=Heather"));*/
 	</script>
 
 </html>

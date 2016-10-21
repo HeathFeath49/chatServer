@@ -11,7 +11,10 @@ var data ={
 function broadcast(author,message){
 
 	clientList.forEach(function(res){
-		res.write(message);
+		console.log(clientList.length);
+		console.log(message);
+		//res.write(message);
+		
 	});		
 }
 
@@ -28,7 +31,7 @@ function welcomeUser(req,res){
 	var username = req.url.slice(7,req.url.length);
 	data.username = username;
 	addClient(res);
-	//broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
+	broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
 }
 
 function addClient(res){
@@ -63,24 +66,22 @@ function resolve(req,res){
 }
 
 addRoute('GET',/^\/$/,addClient);
-//addRoute('GET',/\/\?user=\w+/,welcomeUser);//need to create handler function
-addRoute('GET',/\/\?user=\w+&msg=\w+/,getMessage);
+addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
+addRoute('GET',/^\/\?user=\w+&msg=\w+$/,getMessage);
 
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
-	//response.write("<h1>Welcome to chat <code>" + response.name + "</code></h1>");
+	
 	
 	//RESOLVE ROUTE	
 	resolve(request,response);
-	response.end();
 
-
-	//ANNOUNCE CLIENT LEAVING
- 	/*client.on("close",function(){
-		broadcast({name:response.name},"has left the chatroom");
+	//DELETE CLIENT FROM CLIENTLIST
+ 	request.on("close",function(){
+		//broadcast({name:response.name},"has left the chatroom");
 		clientList.splice(clientList.indexOf(response),1);
-	});*/
+	});
 	 
 }); 
 

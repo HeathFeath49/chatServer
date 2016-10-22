@@ -4,7 +4,8 @@ body{
 }
 
 #messageBoard{
-	background-color:white;
+	position:relative;
+	background:rgba(0,0,0,0.5);
 	height:500px;
 	width:500px;
 	margin:auto;
@@ -29,7 +30,7 @@ body{
 	display: none;
 }
 
-#usernameInput{
+#usernameInputDiv{
 	margin:auto;
 	position:absolute;
 	top:0; bottom:0; left:0; right:0;
@@ -41,6 +42,16 @@ body{
 	font-size: 1em;
 }
 
+#messageInputDiv{
+	position:absolute;
+	bottom:0; left:0;
+}
+
+#messageField{
+	font-size: 1.3em;
+	height:70px;
+	width:350px;
+}
 
 #wrapperDiv{
 	margin-top: 50px;	

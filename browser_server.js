@@ -11,25 +11,37 @@ var data ={
 function broadcast(author,message){
 
 	clientList.forEach(function(res){
-		console.log(clientList.length);
-		console.log(message);
-		//res.write(message);
 		
+		console.log(message);
+		res.write(message);
+		res.end();
+		clientList.splice(res,1);
 	});		
 }
 
+function getDataFromUrl(url){
+	var d = {
+		user: null,
+		message: null
+	}
+	var u = req.url.slice(7,req.url.length);
+
+}
+
 function getMessage(req,res){
+	addClient(res);
+	/*console.log(data.username);*/
 	var username = req.url.slice(7,req.url.length);
-	//broadcast(username,"<h1>blah</h1>");
 	var msgStart = username.length+2;
 	var message = req.url.slice(msgStart,req.url.length);
-	console.log(message);
+	/*console.log(message);*/
 }
 
 
 function welcomeUser(req,res){
 	var username = req.url.slice(7,req.url.length);
 	data.username = username;
+	//console.log(data.username);
 	addClient(res);
 	broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
 }
@@ -60,7 +72,6 @@ function resolve(req,res){
 	for(var r=0;r<routes.length;r++){
 		if(routes[r].method == reqMethod && routes[r].url.test(reqUrl)){
 			routes[r].handler(req,res);
-			break;
 		}	
 	} 
 }

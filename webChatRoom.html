@@ -4,38 +4,52 @@
 		<title>Web Chat Room</title>
 		<meta charset="utf-8">
 		<link href="webChatRoom.css" rel="stylesheet">
-		<!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> -->
-		<script type="text/javascript" src="index.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script type="text/javascript" src="index.js"></script>>
 	</head>
 
 	<body>
 		<h1>Chatroom</h1>
 
-		<div id='messageBoard'></div>
+		<div id='messageBoard'>
+			<div id='messageInputDiv'>
+				<textarea id='messageField'></textarea>
+				<button id='sendBtn'>Send</button>
+			</div>
+		</div>
 
-		<div class='lightbox' id='usernameInput'>
+		
+
+		<div class='lightbox' id='usernameInputDiv'>
 			<div id='wrapperDiv'>
 				<span>Enter Username</span><br>
 				<input type='text' id='usernameInputField'><br>
 				<button id="submit">Submit</button>
-			<div>
+			</div>
 		</div>
 
 	</body>
 	<script>
-
-		document.addEventListener('DOMContentLoaded',function(event){
+		var data = {};
+		/*document.addEventListener('DOMContentLoaded',function(event){
 			console.log('page loaded');
-		});
+		});*/
 
 		document.getElementById('submit').addEventListener('click',function(event){
 			var username = document.getElementById('usernameInputField').value;
-			//window.location.href='#usernameInput';
+			data.username = username;
+			window.location.href='#usernameInputDiv';
 			sendRepeatedRequests('http://localhost:8000/?user='+username);
+
+		});
+
+		document.getElementById('sendBtn').addEventListener('click',function(event){
+			console.log('got here');
+			var msg = document.getElementById('messageField').value;
+			console.log(data.username);
+			console.log(msg);
 		});	
 
-		/*$(document).ready(sendRepeatedRequests("http://localhost:8000/?user=Heather"));*/
+
 	</script>
 
 </html>

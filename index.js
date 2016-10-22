@@ -14,3 +14,12 @@ function sendRepeatedRequests(requested){
 		
 	})
 }
+
+function sendMessage(username,message){
+	var req = new XMLHttpRequest();
+	req.open("GET","http://localhost:8000/?user="+username+"&msg="+message);
+	req.send(null);
+	req.addEventListener("load",function(){
+		console.log(req.responseText);
+	})
+}

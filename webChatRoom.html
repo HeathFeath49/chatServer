@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Web Chat Room</title>
+		<meta charset="utf-8">
+		<link href="webChatRoom.css" rel="stylesheet">
+		<script type="text/javascript" src="index.js"></script>
+	</head>
+
+	<body>
+		<h1>Chatroom</h1>
+
+		<div id='messageBoard'>
+			
+		</div>
+		<div id='messageInputDiv'>
+			<textarea id='messageField'></textarea>
+			<button id='sendBtn'>Send</button>
+		</div>
+
+		
+
+		<div class='lightbox' id='usernameInputDiv'>
+			<div id='wrapperDiv'>
+				<span>Enter Username</span><br>
+				<input type='text' id='usernameInputField'><br>
+				<button id="submit">Submit</button>
+			</div>
+		</div>
+
+	
+	<script>
+		var data = {};
+		/*document.addEventListener('DOMContentLoaded',function(event){
+			console.log('page loaded');
+		});*/
+
+		document.getElementById('submit').addEventListener('click',function(event){
+			var username = document.getElementById('usernameInputField').value;
+			data.username = username;
+			window.location.href='#usernameInputDiv';
+			sendRepeatedRequests('http://localhost:8000/?user='+username);
+
+		});
+
+		document.getElementById('sendBtn').addEventListener('click',function(event){
+			var msg = document.getElementById('messageField').value;
+			sendMessage(data.username,msg);
+			console.log('returned from server');
+		});	
+
+
+	</script>
+	</body>
+</html>

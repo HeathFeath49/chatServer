@@ -1,39 +1,57 @@
 var http = require("http"); 
 var clientList = [];
 var routes = [];
-/*var clientCon;*/
+var data ={
+	username: null,
+	message: null
+};
 
 
 
 function broadcast(author,message){
-	//console.log('hit broadcast');
-
-	clientList.forEach(function(fella){
-		console.log('inside clientLoop');
-		//fella.write("<p><code>"+author + "</code>:<code>" + message+"</code></p>");
-		/*fella.write("<p><code>"+message+"</code></p>");*/
-		console.log(author + " : "+ message);
-
+	//console.log(clientList.length);
+	clientList.forEach(function(res){
+		
+		//console.log(message);
+		res.write(message);
+		res.end();
+		clientList.splice(res,1);
 	});		
 }
 
+function getDataFromUrl(url){
+	var d = {
+		user: null,
+		message: null
+	}
+	var u = req.url.slice(7,req.url.length);
 
-function determineMsg(req,res){
-	if(req.url == '/?'){
-		console.log('handler satisfied!');
-		broadcast(res.name,'has entered the chatroom');
-	}
-	else{
-		console.log("ERROR AT: determineMsg");
-	}
 }
 
-function addClient(req,res){
+function getMessage(req,res){
+	addClient(res);
+	var queryString = req.url;
+	
+	/*var username = queryString.slice(7,queryString.indexOf('&'));
+	var msgStart = 7 + username.length+5;
+	var message = req.url.slice(msgStart,req.url.length);
+	console.log(username + " : " + message);*/
+}
+
+
+function welcomeUser(req,res){
+	var username = req.url.slice(7,req.url.length);
+	data.username = username;
+	addClient(res);
+	broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
+}
+
+function addClient(res){
 	var clientCon = res.connection;
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
 
 	clientList.push(res);
-	console.log('added client');
+	
 }
 
 function addRoute(method,url,handler){
@@ -52,36 +70,29 @@ function resolve(req,res){
 
 	//loop through routes array and check for resolution 
 	for(var r=0;r<routes.length;r++){
-		if(routes[r].method == reqMethod && routes[r].url == reqUrl){
-			//console.log('called handler');
+		if(routes[r].method == reqMethod && routes[r].url.test(reqUrl)){
 			routes[r].handler(req,res);
-			break;
-		}
-		else{
-			console.log('ERROR AT: resolve');
-			/*console.log(reqMethod + " " + reqUrl);*/
-		}
+		}	
 	} 
 }
 
+addRoute('GET',/^\/$/,addClient);
+addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
+addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,getMessage);
 
-addRoute('GET','/',determineMsg);
-addRoute('GET','/msg:',broadcast);
-addRoute('GET','/:',addClient);
 
 var server = http.createServer(function(request, response) {
+	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
+	//console.log(request.url);	
+	
 	//RESOLVE ROUTE	
 	resolve(request,response);
-	
-	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
-	response.write("<h1>Welcome to chat <code>" + response.name + "</code></h1>");
 
-	//ANNOUNCE CLIENT LEAVING
-
- 	//client.on("close",function(){
-	// 	broadcast({name:response.name},"has left the chatroom");
-	// 	clientList.splice(clientList.indexOf(response),1);
-	// });
+	//DELETE CLIENT FROM CLIENTLIST
+ 	request.on("close",function(){
+		//broadcast({name:response.name},"has left the chatroom");
+		clientList.splice(clientList.indexOf(response),1);
+	});
 	 
 }); 
 

@@ -1,0 +1,23 @@
+function sendRepeatedRequests(requested){
+	var req = new XMLHttpRequest();
+
+	//req.open("GET","http://localhost:8000/",true);
+	req.open("GET",requested,true);
+	
+	req.send(null);
+
+	req.addEventListener("load",function(){
+		var data = req.responseText;
+		document.getElementById('messageBoard').innerHTML += data;
+		sendRepeatedRequests("http://localhost:8000/");	
+	})
+}
+
+function sendMessage(username,message){
+	var req = new XMLHttpRequest();
+	req.open("GET","http://localhost:8000/?user="+username+"&msg="+message);
+	req.send(null);
+	req.addEventListener("load",function(){
+		console.log(req.responseText);
+	})
+}

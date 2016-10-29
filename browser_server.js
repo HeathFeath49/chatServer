@@ -9,10 +9,10 @@ var data ={
 
 
 function broadcast(author,message){
-
+	//console.log(clientList.length);
 	clientList.forEach(function(res){
 		
-		console.log(message);
+		//console.log(message);
 		res.write(message);
 		res.end();
 		clientList.splice(res,1);
@@ -30,18 +30,18 @@ function getDataFromUrl(url){
 
 function getMessage(req,res){
 	addClient(res);
-	/*console.log(data.username);*/
-	var username = req.url.slice(7,req.url.length);
-	var msgStart = username.length+2;
+	var queryString = req.url;
+	
+	/*var username = queryString.slice(7,queryString.indexOf('&'));
+	var msgStart = 7 + username.length+5;
 	var message = req.url.slice(msgStart,req.url.length);
-	/*console.log(message);*/
+	console.log(username + " : " + message);*/
 }
 
 
 function welcomeUser(req,res){
 	var username = req.url.slice(7,req.url.length);
 	data.username = username;
-	//console.log(data.username);
 	addClient(res);
 	broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
 }
@@ -78,12 +78,12 @@ function resolve(req,res){
 
 addRoute('GET',/^\/$/,addClient);
 addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
-addRoute('GET',/^\/\?user=\w+&msg=\w+$/,getMessage);
+addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,getMessage);
 
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
-	
+	//console.log(request.url);	
 	
 	//RESOLVE ROUTE	
 	resolve(request,response);

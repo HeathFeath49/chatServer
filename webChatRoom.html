@@ -4,17 +4,18 @@
 		<title>Web Chat Room</title>
 		<meta charset="utf-8">
 		<link href="webChatRoom.css" rel="stylesheet">
-		<script type="text/javascript" src="index.js"></script>>
+		<script type="text/javascript" src="index.js"></script>
 	</head>
 
 	<body>
 		<h1>Chatroom</h1>
 
 		<div id='messageBoard'>
-			<div id='messageInputDiv'>
-				<textarea id='messageField'></textarea>
-				<button id='sendBtn'>Send</button>
-			</div>
+			
+		</div>
+		<div id='messageInputDiv'>
+			<textarea id='messageField'></textarea>
+			<button id='sendBtn'>Send</button>
 		</div>
 
 		
@@ -27,7 +28,7 @@
 			</div>
 		</div>
 
-	</body>
+	
 	<script>
 		var data = {};
 		/*document.addEventListener('DOMContentLoaded',function(event){
@@ -43,13 +44,12 @@
 		});
 
 		document.getElementById('sendBtn').addEventListener('click',function(event){
-			console.log('got here');
 			var msg = document.getElementById('messageField').value;
-			console.log(data.username);
-			console.log(msg);
+			sendMessage(data.username,msg);
+			console.log('returned from server');
 		});	
 
 
 	</script>
-
+	</body>
 </html>

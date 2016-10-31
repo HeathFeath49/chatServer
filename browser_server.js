@@ -1,49 +1,47 @@
 var http = require("http"); 
 var clientList = [];
 var routes = [];
-var data ={
+/*var data ={
 	username: null,
 	message: null
 };
+*/
 
 
-
-function broadcast(author,message){
+function broadcast(dataObj){
 	//console.log(clientList.length);
 	clientList.forEach(function(res){
 		
 		//console.log(message);
-		res.write(message);
+		//res.write(message);
+		res.write("<p>"+dataObj.user+" : " +dataObj.msg+"</p>");
 		res.end();
 		clientList.splice(res,1);
 	});		
 }
 
-function getDataFromUrl(url){
-	var d = {
-		user: null,
-		message: null
-	}
-	var u = req.url.slice(7,req.url.length);
 
-}
-
-function getMessage(req,res){
+function sendMessage(req,res,dataObj){
 	addClient(res);
+
 	var queryString = req.url;
-	
-	/*var username = queryString.slice(7,queryString.indexOf('&'));
+	var username = queryString.slice(7,queryString.indexOf('&'));
 	var msgStart = 7 + username.length+5;
-	var message = req.url.slice(msgStart,req.url.length);
-	console.log(username + " : " + message);*/
+	var parsedQueryStr = queryString.replace(/%20/g," ");
+	var message = parsedQueryStr.slice(msgStart,req.url.length);
+
+	dataObj.user = username;
+	dataObj.msg = message;
+	console.log(username + " : " + message);
+	//res.write(JSON.stringify(dataObj));
+	broadcast(dataObj);
 }
 
 
-function welcomeUser(req,res){
-	var username = req.url.slice(7,req.url.length);
-	data.username = username;
+function welcomeUser(req,res,dataObj){
+	dataObj.user = req.url.slice(7,req.url.length);
 	addClient(res);
-	broadcast(data.username,"<h1>Welcome to chat <code>" + username + "</code></h1>");
+	//broadcast(dataObj.user,"<h1>Welcome to chat <code>" + dataObj.user + "</code></h1>");
 }
 
 function addClient(res){
@@ -71,14 +69,18 @@ function resolve(req,res){
 	//loop through routes array and check for resolution 
 	for(var r=0;r<routes.length;r++){
 		if(routes[r].method == reqMethod && routes[r].url.test(reqUrl)){
-			routes[r].handler(req,res);
+			var data = {
+				user: '',
+				msg:''
+			}
+			routes[r].handler(req,res,data);
 		}	
 	} 
 }
 
 addRoute('GET',/^\/$/,addClient);
 addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
-addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,getMessage);
+addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,sendMessage);
 
 
 var server = http.createServer(function(request, response) {

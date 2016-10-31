@@ -43,14 +43,14 @@ body{
 }
 
 #messageInputDiv{
-	position:absolute;
 	bottom:0; left:0;
 }
 
 #messageField{
+	margin: auto;
 	font-size: 1.3em;
 	height:70px;
-	width:350px;
+	width:450px;
 }
 
 #wrapperDiv{

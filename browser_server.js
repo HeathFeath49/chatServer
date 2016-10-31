@@ -1,22 +1,21 @@
 var http = require("http"); 
 var clientList = [];
 var routes = [];
-/*var data ={
-	username: null,
-	message: null
-};
-*/
+
 
 
 function broadcast(dataObj){
-	//console.log(clientList.length);
+/*	clientList.forEach(function(ele){
+		console.log(ele.name);
+	});*/
+	console.log(JSON.stringify(dataObj));
 	clientList.forEach(function(res){
-		
-		//console.log(message);
-		//res.write(message);
-		res.write("<p>"+dataObj.user+" : " +dataObj.msg+"</p>");
+		//console.log(res.name);
+		res.write(JSON.stringify(dataObj));
 		res.end();
 		clientList.splice(res,1);
+		console.log(clientList.length);
+		
 	});		
 }
 
@@ -32,22 +31,22 @@ function sendMessage(req,res,dataObj){
 
 	dataObj.user = username;
 	dataObj.msg = message;
-	console.log(username + " : " + message);
-	//res.write(JSON.stringify(dataObj));
+	/*console.log(dataObj.user);
+	console.log(dataObj.msg);*/
 	broadcast(dataObj);
 }
 
 
 function welcomeUser(req,res,dataObj){
+	console.log('hit welcomeUser');
 	dataObj.user = req.url.slice(7,req.url.length);
 	addClient(res);
-	//broadcast(dataObj.user,"<h1>Welcome to chat <code>" + dataObj.user + "</code></h1>");
+	broadcast(dataObj);
 }
 
 function addClient(res){
 	var clientCon = res.connection;
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
-
 	clientList.push(res);
 	
 }
@@ -62,7 +61,7 @@ function addRoute(method,url,handler){
 
 
 function resolve(req,res){ 
-	//console.log('hit resolve');
+	
 	var reqMethod = req.method;
 	var reqUrl = req.url;
 
@@ -78,21 +77,20 @@ function resolve(req,res){
 	} 
 }
 
-addRoute('GET',/^\/$/,addClient);
+//addRoute('GET',/^\/$/,addClient);
 addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
 addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,sendMessage);
 
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
-	//console.log(request.url);	
+		
 	
 	//RESOLVE ROUTE	
 	resolve(request,response);
 
 	//DELETE CLIENT FROM CLIENTLIST
  	request.on("close",function(){
-		//broadcast({name:response.name},"has left the chatroom");
 		clientList.splice(clientList.indexOf(response),1);
 	});
 	 

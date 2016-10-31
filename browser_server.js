@@ -5,22 +5,16 @@ var routes = [];
 
 
 function broadcast(dataObj){
-/*	clientList.forEach(function(ele){
-		console.log(ele.name);
-	});*/
-	console.log(JSON.stringify(dataObj));
 	clientList.forEach(function(res){
-		//console.log(res.name);
 		res.write(JSON.stringify(dataObj));
 		res.end();
 		clientList.splice(res,1);
-		console.log(clientList.length);
-		
 	});		
 }
 
 
 function sendMessage(req,res,dataObj){
+	//console.log('hit sendMessage');
 	addClient(res);
 
 	var queryString = req.url;
@@ -38,13 +32,14 @@ function sendMessage(req,res,dataObj){
 
 
 function welcomeUser(req,res,dataObj){
-	console.log('hit welcomeUser');
+	//console.log('hit welcomeUser');
 	dataObj.user = req.url.slice(7,req.url.length);
 	addClient(res);
 	broadcast(dataObj);
 }
 
 function addClient(res){
+	//console.log('hit addClient');
 	var clientCon = res.connection;
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
 	clientList.push(res);
@@ -90,9 +85,9 @@ var server = http.createServer(function(request, response) {
 	resolve(request,response);
 
 	//DELETE CLIENT FROM CLIENTLIST
- 	request.on("close",function(){
+ 	/*request.on("close",function(){
 		clientList.splice(clientList.indexOf(response),1);
-	});
+	});*/
 	 
 }); 
 

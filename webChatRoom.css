@@ -4,6 +4,7 @@ body{
 }
 
 #messageBoard{
+	text-align: left;
 	position:relative;
 	background:rgba(0,0,0,0.5);
 	height:500px;

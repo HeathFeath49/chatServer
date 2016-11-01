@@ -5,17 +5,18 @@ var routes = [];
 
 
 function broadcast(dataObj){
+	console.log('hit broadcast');
 	clientList.forEach(function(res){
 		res.write(JSON.stringify(dataObj));
 		res.end();
-		clientList.splice(res,1);
-	});		
+	});
+	clientList = [];		
 }
 
 
 function sendMessage(req,res,dataObj){
-	//console.log('hit sendMessage');
-	addClient(res);
+	console.log('hit sendMessage');
+	//addClient(res);
 
 	var queryString = req.url;
 	var username = queryString.slice(7,queryString.indexOf('&'));
@@ -25,21 +26,24 @@ function sendMessage(req,res,dataObj){
 
 	dataObj.user = username;
 	dataObj.msg = message;
-	/*console.log(dataObj.user);
-	console.log(dataObj.msg);*/
+
 	broadcast(dataObj);
 }
 
 
 function welcomeUser(req,res,dataObj){
-	//console.log('hit welcomeUser');
+	console.log('hit welcomeUser');
+
 	dataObj.user = req.url.slice(7,req.url.length);
-	addClient(res);
+	//addClient(res);
+	res.write(JSON.stringify(dataObj));
+	res.end();
+	console.log('got here');
 	broadcast(dataObj);
 }
 
 function addClient(res){
-	//console.log('hit addClient');
+	console.log('hit addClient');
 	var clientCon = res.connection;
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
 	clientList.push(res);
@@ -72,7 +76,7 @@ function resolve(req,res){
 	} 
 }
 
-//addRoute('GET',/^\/$/,addClient);
+addRoute('GET',/^\/$/,addClient);
 addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
 addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,sendMessage);
 
@@ -84,10 +88,12 @@ var server = http.createServer(function(request, response) {
 	//RESOLVE ROUTE	
 	resolve(request,response);
 
+
+
 	//DELETE CLIENT FROM CLIENTLIST
- 	/*request.on("close",function(){
+ 	request.on("close",function(){
 		clientList.splice(clientList.indexOf(response),1);
-	});*/
+	});
 	 
 }); 
 

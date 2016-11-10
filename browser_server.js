@@ -26,6 +26,7 @@ function sendMessage(req,res,dataObj){
 
 	dataObj.user = username;
 	dataObj.msg = message;
+	dataObj.eve = "m";
 
 	broadcast(dataObj);
 }
@@ -35,14 +36,15 @@ function welcomeUser(req,res,dataObj){
 	console.log('hit welcomeUser');
 
 	dataObj.user = req.url.slice(7,req.url.length);
+	dataObj.eve = "w";
 	//addClient(res);
 	res.write(JSON.stringify(dataObj));
 	res.end();
-	console.log('got here');
-	broadcast(dataObj);
+	//console.log('got here');
+	//broadcast(dataObj);
 }
 
-function addClient(res){
+function addClient(req,res){
 	console.log('hit addClient');
 	var clientCon = res.connection;
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
@@ -69,7 +71,8 @@ function resolve(req,res){
 		if(routes[r].method == reqMethod && routes[r].url.test(reqUrl)){
 			var data = {
 				user: '',
-				msg:''
+				msg:'',
+				eve:''
 			}
 			routes[r].handler(req,res,data);
 		}	
@@ -89,11 +92,10 @@ var server = http.createServer(function(request, response) {
 	resolve(request,response);
 
 
-
 	//DELETE CLIENT FROM CLIENTLIST
- 	request.on("close",function(){
+ 	/*request.on("close",function(){
 		clientList.splice(clientList.indexOf(response),1);
-	});
+	});*/
 	 
 }); 
 

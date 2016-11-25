@@ -28,8 +28,8 @@
 			</div>
 		</div>
 
-		<!--TEMPLATE-->
-		<div id = "msgTemplate">
+		<!--MESSAGE TEMPLATE-->
+		<div id = "msgTemplate" class="template">
   			<p>
     			<span class = "user">{{user}}</span>: {{msg}}
   			</p>
@@ -37,13 +37,16 @@
 		<!-- <input type = "text" id = "msg" placeholder = "Enter message...">
 		<button id = "msgSubmit">Post message</button>
 		<div id = "messages"></div> -->
+		<div id= "welcomeTemplate" class="template">
+			<p>
+				<span>{{msg}}</span> {{user}}
+			</p>
+		</div>
 
 	
 	<script>
 		var data = {};
-		/*document.addEventListener('DOMContentLoaded',function(event){
-			console.log('page loaded');
-		});*/
+		var messageField = document.getElementById('messageField');
 
 		document.getElementById('submit').addEventListener('click',function(event){
 			var username = document.getElementById('usernameInputField').value;
@@ -54,9 +57,11 @@
 		});
 
 		document.getElementById('sendBtn').addEventListener('click',function(event){
-			var msg = document.getElementById('messageField').value;
+			var msg = messageField.value;
+			messageField.value = "";
+			messageField.focus();
 			sendMessage(data.username,msg);
-			console.log('returned from server');
+			
 		});	
 
 

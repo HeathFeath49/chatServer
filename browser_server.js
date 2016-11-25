@@ -15,13 +15,13 @@ function broadcast(dataObj){
 
 
 function sendMessage(req,res,dataObj){
-	console.log('hit sendMessage');
-	//addClient(res);
+	//console.log('hit sendMessage');
 
 	var queryString = req.url;
 	var username = queryString.slice(7,queryString.indexOf('&'));
 	var msgStart = 7 + username.length+5;
 	var parsedQueryStr = queryString.replace(/%20/g," ");
+	parsedQueryStr = parsedQueryStr.replace(/%27/g,"'");
 	var message = parsedQueryStr.slice(msgStart,req.url.length);
 
 	dataObj.user = username;
@@ -36,12 +36,11 @@ function welcomeUser(req,res,dataObj){
 	console.log('hit welcomeUser');
 
 	dataObj.user = req.url.slice(7,req.url.length);
+	dataObj.msg = "Welcome"
 	dataObj.eve = "w";
-	//addClient(res);
 	res.write(JSON.stringify(dataObj));
 	res.end();
-	//console.log('got here');
-	//broadcast(dataObj);
+
 }
 
 function addClient(req,res){

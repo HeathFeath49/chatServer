@@ -3,12 +3,26 @@ body{
 	text-align: center;
 }
 
-#messageBoard{
+#welcomeMessage{
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+}
+
+.message{
+	font-size:1.2em;
+	font-weight: bold; 
 	text-align: left;
-	position:relative;
+	padding-left:10px;
+}
+
+#messageBoard{
+	word-wrap:break-word;
+	overflow-y:scroll;
+	/*position:relative;*/
 	background:rgba(0,0,0,0.5);
 	height:500px;
-	width:500px;
+	width:700px;
 	margin:auto;
 }
 
@@ -62,4 +76,8 @@ body{
 	margin:15px;
 	padding:10px;
 	width:100px;
+}
+
+.template{
+	display:none;
 }

@@ -9,14 +9,17 @@ function sendRepeatedRequests(requested){
 	req.addEventListener("load",function(){
 		var data = JSON.parse(req.responseText);
 		if(data.eve == "w"){
-			document.getElementById("messageBoard").innerHTML += "<h1>Welcome "+data.user+"</h1>";
+			var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
+			welcomeHTML.setAttribute("id","welcomeMessage");
+			welcomeHTML.removeAttribute("class");
+			document.getElementById("messageBoard").append(welcomeHTML);
 		}
 		else if(data.eve == "m"){
 			var elements = instantiateTemplate("msgTemplate",data);
 			elements.removeAttribute("id");
-			console.log(elements);
-			document.getElementById("messageBoard").append(elements);
-			//document.getElementById("messageBoard").innerHTML += "<p>"+data.user+" : " +data.msg+"</p>";	
+			elements.removeAttribute("class");
+			elements.setAttribute("class","message");
+			document.getElementById("messageBoard").append(elements);	
 		}
 		sendRepeatedRequests("http://localhost:8000/");	
 	})

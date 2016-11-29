@@ -8,7 +8,9 @@ function sendRepeatedRequests(requested){
 
 	req.addEventListener("load",function(){
 		var data = JSON.parse(req.responseText);
-		if(data.eve == "w"){
+		//data.eve = "command";
+		chatServer.emit(data.eve,data);
+		/*if(data.eve == "w"){
 			var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
 			welcomeHTML.setAttribute("id","welcomeMessage");
 			welcomeHTML.removeAttribute("class");
@@ -20,7 +22,7 @@ function sendRepeatedRequests(requested){
 			elements.removeAttribute("class");
 			elements.setAttribute("class","message");
 			document.getElementById("messageBoard").append(elements);	
-		}
+		}*/
 		sendRepeatedRequests("http://localhost:8000/");	
 	})
 }
@@ -113,16 +115,31 @@ var chatServer = new EventEmitter();
 
 //TESTS
 /*chatServer.on("command",function(ele){
-	console.log(ele);
-});
+	//console.log(ele);
+	//console.log(ele.msg);
+});*/
 
-chatServer.on("command",function(num){
+/*chatServer.on("command",function(num){
 	console.log(num+1);
 });*/
 
-/*chatServer.on("message", function(data) {
-  	instantiateTemplate("msgTemplate", {username: data.username, msg: data.msg});
+chatServer.on("welcome",function(data){
+	/*var elements = instantiateTemplate("welcomeTemplate",data);*/
+	var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
+	welcomeHTML.setAttribute("id","welcomeMessage");
+	welcomeHTML.removeAttribute("class");
+	document.getElementById("messageBoard").append(welcomeHTML);
+
+	//console.log("chatServer: welcome event");
 });
 
-chatServer.emit("command","a",2);
-*/
+chatServer.on("message", function(data) {
+  	instantiateTemplate("msgTemplate",data);
+  	var elements = instantiateTemplate("msgTemplate",data);
+	elements.removeAttribute("id");
+	elements.removeAttribute("class");
+	elements.setAttribute("class","message");
+	document.getElementById("messageBoard").append(elements);	
+  	//console.log("chatServer: message event");
+});
+//chatServer.emit("command","a",2);

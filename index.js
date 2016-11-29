@@ -8,6 +8,8 @@ function sendRepeatedRequests(requested){
 
 	req.addEventListener("load",function(){
 		var data = JSON.parse(req.responseText);
+		console.log(data);
+		console.log('got here');
 		//data.eve = "command";
 		chatServer.emit(data.eve,data);
 		/*if(data.eve == "w"){
@@ -30,6 +32,7 @@ function sendRepeatedRequests(requested){
 function sendMessage(username,message){
 	var req = new XMLHttpRequest();
 	req.open("GET","http://localhost:8000/?user="+username+"&msg="+message);
+	console.log('hello');
 	req.send(null);
 }
 
@@ -45,7 +48,7 @@ function replaceText(node,data){
 		else if(node.nodeValue[i] == '}'){
 			endI = i;
 			v = node.nodeValue.slice(startI,endI);
-			console.log(data);
+			
       		node.nodeValue = node.nodeValue.replace("{{"+v+"}}", data[v]);
 		}
 	}
@@ -123,7 +126,7 @@ var chatServer = new EventEmitter();
 	console.log(num+1);
 });*/
 
-chatServer.on("welcome",function(data){
+chatServer.on("w",function(data){
 	/*var elements = instantiateTemplate("welcomeTemplate",data);*/
 	var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
 	welcomeHTML.setAttribute("id","welcomeMessage");
@@ -133,7 +136,7 @@ chatServer.on("welcome",function(data){
 	//console.log("chatServer: welcome event");
 });
 
-chatServer.on("message", function(data) {
+chatServer.on("m", function(data) {
   	instantiateTemplate("msgTemplate",data);
   	var elements = instantiateTemplate("msgTemplate",data);
 	elements.removeAttribute("id");

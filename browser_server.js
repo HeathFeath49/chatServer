@@ -29,6 +29,7 @@ function sendMessage(req,res,dataObj){
 	dataObj.eve = "m";
 
 	broadcast(dataObj);
+	res.end();
 }
 
 

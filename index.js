@@ -8,7 +8,11 @@ function sendRepeatedRequests(requested){
 
 	req.addEventListener("load",function(){
 		var data = JSON.parse(req.responseText);
-		if(data.eve == "w"){
+		console.log(data);
+		console.log('got here');
+		//data.eve = "command";
+		chatServer.emit(data.eve,data);
+		/*if(data.eve == "w"){
 			var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
 			welcomeHTML.setAttribute("id","welcomeMessage");
 			welcomeHTML.removeAttribute("class");
@@ -20,7 +24,7 @@ function sendRepeatedRequests(requested){
 			elements.removeAttribute("class");
 			elements.setAttribute("class","message");
 			document.getElementById("messageBoard").append(elements);	
-		}
+		}*/
 		sendRepeatedRequests("http://localhost:8000/");	
 	})
 }
@@ -28,6 +32,7 @@ function sendRepeatedRequests(requested){
 function sendMessage(username,message){
 	var req = new XMLHttpRequest();
 	req.open("GET","http://localhost:8000/?user="+username+"&msg="+message);
+	console.log('hello');
 	req.send(null);
 }
 
@@ -43,7 +48,7 @@ function replaceText(node,data){
 		else if(node.nodeValue[i] == '}'){
 			endI = i;
 			v = node.nodeValue.slice(startI,endI);
-			console.log(data);
+			
       		node.nodeValue = node.nodeValue.replace("{{"+v+"}}", data[v]);
 		}
 	}
@@ -113,16 +118,31 @@ var chatServer = new EventEmitter();
 
 //TESTS
 /*chatServer.on("command",function(ele){
-	console.log(ele);
-});
+	//console.log(ele);
+	//console.log(ele.msg);
+});*/
 
-chatServer.on("command",function(num){
+/*chatServer.on("command",function(num){
 	console.log(num+1);
 });*/
 
-/*chatServer.on("message", function(data) {
-  	instantiateTemplate("msgTemplate", {username: data.username, msg: data.msg});
+chatServer.on("w",function(data){
+	/*var elements = instantiateTemplate("welcomeTemplate",data);*/
+	var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
+	welcomeHTML.setAttribute("id","welcomeMessage");
+	welcomeHTML.removeAttribute("class");
+	document.getElementById("messageBoard").append(welcomeHTML);
+
+	//console.log("chatServer: welcome event");
 });
 
-chatServer.emit("command","a",2);
-*/
+chatServer.on("m", function(data) {
+  	instantiateTemplate("msgTemplate",data);
+  	var elements = instantiateTemplate("msgTemplate",data);
+	elements.removeAttribute("id");
+	elements.removeAttribute("class");
+	elements.setAttribute("class","message");
+	document.getElementById("messageBoard").append(elements);	
+  	//console.log("chatServer: message event");
+});
+//chatServer.emit("command","a",2);

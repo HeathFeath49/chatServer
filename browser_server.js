@@ -15,8 +15,6 @@ function broadcast(dataObj){
 
 
 function sendMessage(req,res,dataObj){
-	//console.log('hit sendMessage');
-
 	var queryString = req.url;
 	var username = queryString.slice(7,queryString.indexOf('&'));
 	var msgStart = 7 + username.length+5;
@@ -45,11 +43,9 @@ function welcomeUser(req,res,dataObj){
 }
 
 function addClient(req,res){
-	console.log('hit addClient');
 	var clientCon = res.connection;
 	res.name = clientCon.remoteAddress + ":" + clientCon.remotePort;
 	clientList.push(res);
-	
 }
 
 function addRoute(method,url,handler){
@@ -80,27 +76,14 @@ function resolve(req,res){
 }
 
 addRoute('GET',/^\/$/,addClient);
-addRoute('GET',/^\/\?user=\w+$/,welcomeUser);//need to create handler function
+addRoute('GET',/^\/\?user=\w+$/,welcomeUser);
 addRoute('GET',/^\/\?user=\w+&msg=[a-zA-Z0-9. _^%&$#?!~@,-]+$/,sendMessage);
 
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/html", "Access-control-allow-origin": "*"});
-		
-	
 	//RESOLVE ROUTE	
-	resolve(request,response);
-
-
-	//DELETE CLIENT FROM CLIENTLIST
- 	/*request.on("close",function(){
-		clientList.splice(clientList.indexOf(response),1);
-	});*/
-	 
+	resolve(request,response);	 
 }); 
-
-
-
-
 
 server.listen(8000);

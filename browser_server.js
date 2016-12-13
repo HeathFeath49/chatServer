@@ -32,14 +32,11 @@ function sendMessage(req,res,dataObj){
 
 
 function welcomeUser(req,res,dataObj){
-	console.log('hit welcomeUser');
-
 	dataObj.user = req.url.slice(7,req.url.length);
 	dataObj.msg = "Welcome"
 	dataObj.eve = "w";
 	res.write(JSON.stringify(dataObj));
 	res.end();
-
 }
 
 function addClient(req,res){

@@ -34,9 +34,7 @@
     			<span class = "user">{{user}}</span>: {{msg}}
   			</p>
 		</div>
-		<!-- <input type = "text" id = "msg" placeholder = "Enter message...">
-		<button id = "msgSubmit">Post message</button>
-		<div id = "messages"></div> -->
+
 		<div id= "welcomeTemplate" class="template">
 			<p>
 				<span>{{msg}}</span> {{user}}
@@ -47,13 +45,21 @@
 	<script>
 		var data = {};
 		var messageField = document.getElementById('messageField');
+		var errorFound = function(str){
+			var stringArr = str.split(''); 
+			return !(stringArr.every(elem=> elem != ' '));
+		}
 
 		document.getElementById('submit').addEventListener('click',function(event){
 			var username = document.getElementById('usernameInputField').value;
-			data.username = username;
-			window.location.href='#usernameInputDiv';
-			sendRepeatedRequests('http://localhost:8000/?user='+username);
-
+			if(errorFound(username)){
+				window.alert("Error with input! No spaces allowed!");
+			}
+			else{
+				data.username = username;
+				window.location.href='#usernameInputDiv';
+				sendRepeatedRequests('http://localhost:8000/?user='+username);	
+			}
 		});
 
 		document.getElementById('sendBtn').addEventListener('click',function(event){
@@ -61,14 +67,7 @@
 			messageField.value = "";
 			messageField.focus();
 			sendMessage(data.username,msg);
-			
 		});	
-		/*setInterval(function(){
-			var element = document.createElement("p");
-			element.append(document.createTextNode("foo"));
-			document.getElementById('messageBoard').append(element);
-		},200);*/
-
 
 	</script>
 	</body>

@@ -1,4 +1,3 @@
-
 function sendRepeatedRequests(requested){
 	var req = new XMLHttpRequest();
 
@@ -8,23 +7,7 @@ function sendRepeatedRequests(requested){
 
 	req.addEventListener("load",function(){
 		var data = JSON.parse(req.responseText);
-		console.log(data);
-		console.log('got here');
-		//data.eve = "command";
 		chatServer.emit(data.eve,data);
-		/*if(data.eve == "w"){
-			var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
-			welcomeHTML.setAttribute("id","welcomeMessage");
-			welcomeHTML.removeAttribute("class");
-			document.getElementById("messageBoard").append(welcomeHTML);
-		}
-		else if(data.eve == "m"){
-			var elements = instantiateTemplate("msgTemplate",data);
-			elements.removeAttribute("id");
-			elements.removeAttribute("class");
-			elements.setAttribute("class","message");
-			document.getElementById("messageBoard").append(elements);	
-		}*/
 		sendRepeatedRequests("http://localhost:8000/");	
 	})
 }
@@ -40,7 +23,6 @@ function replaceText(node,data){
 	var startI;
 	var endI;
 	var v;
-	//console.log('hit replaceText');
 	for (i=0;i<node.nodeValue.length;i++){
 		if(node.nodeValue[i] == '{'){
 			startI = i+1;
@@ -59,7 +41,7 @@ function deepCopyAndReplace(node,dataObj){
 	var cloneNode;
 	var newTextNode;
 	var editedNode;
-	//console.log('hit deepCopyAndReplace');
+	
 	if(node.nodeType == document.ELEMENT_NODE){
 		cloneNode = node.cloneNode(false);
 
@@ -77,13 +59,9 @@ function deepCopyAndReplace(node,dataObj){
 }
 
 function instantiateTemplate(id, data) {
-  var nodeToAppendData = document.getElementById(id); // msgDisplay in http://codepen.io/anon/pen/ALaEbg 
-  // your code to instantiate template goes here
-  //console.log('hit instantiateTemplate');
+  var nodeToAppendData = document.getElementById(id); 
   var newNode = deepCopyAndReplace(nodeToAppendData,data);
-  //Gotta do something with new node!
   return newNode; 
-
 }
 
 //Event Emitter Class
@@ -100,13 +78,9 @@ EventEmitter.prototype.on = function(eventStr, handler) {
 		//push to array of handlers
 		this.eventListeners[eventStr].push(handler);
 	}
-	
 }
 
 EventEmitter.prototype.emit = function(eventStr) {
- 	// iterate over array of event handlers 
-  	// this.eventListeners[eventStr] calling each one, 
-	// passing arguments:
 	var handlerArr = this.eventListeners[eventStr];
 	for(i=0;i<handlerArr.length;i++){
 		var func = this.eventListeners[eventStr][i];
@@ -116,24 +90,12 @@ EventEmitter.prototype.emit = function(eventStr) {
 
 var chatServer = new EventEmitter();
 
-//TESTS
-/*chatServer.on("command",function(ele){
-	//console.log(ele);
-	//console.log(ele.msg);
-});*/
-
-/*chatServer.on("command",function(num){
-	console.log(num+1);
-});*/
 
 chatServer.on("w",function(data){
-	/*var elements = instantiateTemplate("welcomeTemplate",data);*/
 	var welcomeHTML = instantiateTemplate("welcomeTemplate",data);
 	welcomeHTML.setAttribute("id","welcomeMessage");
 	welcomeHTML.removeAttribute("class");
 	document.getElementById("messageBoard").append(welcomeHTML);
-
-	//console.log("chatServer: welcome event");
 });
 
 chatServer.on("m", function(data) {
@@ -143,6 +105,4 @@ chatServer.on("m", function(data) {
 	elements.removeAttribute("class");
 	elements.setAttribute("class","message");
 	document.getElementById("messageBoard").append(elements);	
-  	//console.log("chatServer: message event");
 });
-//chatServer.emit("command","a",2);
